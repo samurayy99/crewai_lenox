@@ -1,0 +1,8 @@
+praw                    # For Reddit API interactions
+tweepy                  # For Twitter API interactions
+requests                # For making HTTP requests to various APIs
+python-dotenv           # For loading environment variables from .env files
+nltk                    # For natural language processing, used in sentiment analysis
+langchain               # If you're using Langchain tools
+unstructured            # If you're using 'partition_html' from unstructured, used in browser_tools.py
+logging                 # For logging, usually comes with standard Python, no need to specify version

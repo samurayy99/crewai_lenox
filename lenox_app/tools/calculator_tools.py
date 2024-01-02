@@ -3,8 +3,13 @@ import ast
 import operator
 
 class CalculatorTools():
-    @tool("Make a calculation")
-    def calculate(expression):
+    @tool("Perform calculation")
+    def calculate(self, expression):
+        """
+        Performs a calculation based on the given mathematical expression.
+        :param expression: A string containing the mathematical expression to be calculated.
+        :return: The result of the calculation.
+        """
         # Define allowed operators
         allowed_operators = {
             ast.Add: operator.add,

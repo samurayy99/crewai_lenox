@@ -6,6 +6,11 @@ from langchain.tools import tool
 class SearchTools():
     @tool("Search the internet")
     def search_internet(self, query):
+        """
+        Searches the internet for the given query and returns the results.
+        :param query: The search query string.
+        :return: A dictionary of search results.
+        """
         try:
             # Replace 'SERPER_API_KEY' with your actual API key for SERPER
             url = "https://google.serper.dev/search"
@@ -24,6 +29,11 @@ class SearchTools():
 
     @tool("Search news on the internet")
     def search_news(self, query):
+        """
+        Searches news sources on the internet for the given query and returns the results.
+        :param query: The search query string.
+        :return: A dictionary of news search results.
+        """
         try:
             # Similar structure to search_internet, but targeting news sources
             # Replace 'NEWS_API_KEY' with your actual API key for the news service

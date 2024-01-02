@@ -13,6 +13,12 @@ class TwitterSentimentAnalysis:
 
     @tool("Analyze Twitter Sentiment")
     def analyze_twitter_sentiment(self, keywords, limit=100):
+        """
+        Analyzes the sentiment of tweets containing specified keywords.
+        :param keywords: A list of keywords to search for in tweets.
+        :param limit: The maximum number of tweets to analyze.
+        :return: A list of dictionaries containing tweet text and sentiment score.
+        """
         try:
             tweets = []
             for keyword in keywords:

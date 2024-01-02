@@ -14,6 +14,13 @@ class RedditSentimentAnalysis:
 
     @tool("Analyze Reddit Sentiment")
     def analyze_reddit_sentiment(self, keywords, subreddits, limit=100):
+        """
+        Analyzes the sentiment of the top posts from given subreddits based on specified keywords.
+        :param keywords: A list of keywords to look for in the subreddit posts.
+        :param subreddits: A list of subreddit names to analyze.
+        :param limit: The maximum number of posts to analyze from each subreddit.
+        :return: A dictionary with 'status' indicating success or error, and 'data' containing the posts and their sentiment scores.
+        """
         try:
             posts = []
             for subreddit in subreddits:

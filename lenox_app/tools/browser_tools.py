@@ -5,9 +5,13 @@ from langchain.tools import tool
 from unstructured.partition.html import partition_html
 
 class BrowserTools():
-
     @tool("Scrape website content")
     def scrape_and_summarize_website(self, website):
+        """
+        Scrape and summarize the content of the given website.
+        :param website: URL of the website to scrape.
+        :return: Summarized content of the website.
+        """
         try:
             # Ensure to replace 'BROWSERLESS_API_KEY' with your actual API key for browserless
             url = f"https://chrome.browserless.io/content?token={os.environ['BROWSERLESS_API_KEY']}"
