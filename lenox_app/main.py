@@ -18,9 +18,11 @@ class LenoxCrew:
         agents = CryptoAnalysisAgents()
         tasks = CryptoAnalysisTasks()
 
-        technical_analyst_agent = agents.create_technical_analyst()
-        sentiment_analyst_agent = agents.create_sentiment_analyst()
-        strategy_advisor_agent = agents.create_strategy_advisor()
+        # Pass the cryptocurrency parameter to agent creation methods
+        technical_analyst_agent = agents.create_technical_analyst(self.cryptocurrency)
+        sentiment_analyst_agent = agents.create_sentiment_analyst(self.cryptocurrency)
+        strategy_advisor_agent = agents.create_strategy_advisor(self.cryptocurrency)
+
 
         market_research_task = tasks.compile_market_research(technical_analyst_agent, self.cryptocurrency)
         technical_analysis_task = tasks.perform_technical_analysis(technical_analyst_agent, self.cryptocurrency)

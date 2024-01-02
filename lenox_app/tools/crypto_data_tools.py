@@ -8,15 +8,24 @@ class CryptoDataTools:
     def fetch_and_analyze_prices(cryptocurrency):
         """
         Fetches the latest price data for a given cryptocurrency and performs basic analysis.
-        :param cryptocurrency: The symbol of the cryptocurrency to analyze (e.g., 'bitcoin').
+        :param cryptocurrency: The symbol of the cryptocurrency to analyze (e.g., 'BTC').
         :return: A dictionary with price data and basic analysis.
         """
         try:
-            url = f"https://api.coingecko.com/api/v3/simple/price?ids={cryptocurrency}&vs_currencies=usd"
-            response = requests.get(url)
+            # Set your CoinMarketCap API Key
+            api_key = os.getenv('COINMARKETCAP_API_KEY')
+            headers = {
+                'Accepts': 'application/json',
+                'X-CMC_PRO_API_KEY': api_key,
+            }
+            
+            # Fetch the latest price
+            url = f"https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol={cryptocurrency}"
+            response = requests.get(url, headers=headers)
             data = response.json()
 
-            latest_price = data.get(cryptocurrency, {}).get('usd', 0)
+            # Extract price and other data
+            latest_price = data['data'][cryptocurrency]['quote']['USD']['price']
 
             # Placeholder for moving average; replace with actual calculation
             moving_average = latest_price  # This is a placeholder
