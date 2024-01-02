@@ -3,7 +3,7 @@ from textwrap import dedent
 
 class CryptoAnalysisTasks:
     def compile_market_research(self, agent, cryptocurrency):
-        if not isinstance(agent, Agent):  # Now Python knows what Agent is
+        if not isinstance(agent, Agent):  # Validate that the provided agent is an instance of Agent
             raise ValueError("The provided agent is not an instance of Agent.")
         return Task(
             description=dedent(f"""
@@ -13,3 +13,16 @@ class CryptoAnalysisTasks:
                 """),
             agent=agent
         )
+
+    # Define additional tasks here as needed, following the same pattern:
+    # def perform_technical_analysis(self, agent, cryptocurrency):
+    #     # Ensure agent is a valid instance of Agent
+    #     # Return a Task with a specific description and the associated agent
+
+    # def conduct_sentiment_analysis(self, agent, cryptocurrency):
+    #     # Ensure agent is a valid instance of Agent
+    #     # Return a Task with a specific description and the associated agent
+
+    # def formulate_strategy_recommendation(self, agent, cryptocurrency):
+    #     # Ensure agent is a valid instance of Agent
+    #     # Return a Task with a specific description and the associated agent
