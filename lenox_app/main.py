@@ -15,24 +15,29 @@ class LenoxCrew:
         self.cryptocurrency = cryptocurrency
 
     def run(self):
+        # Initialize agents and tasks
         agents = CryptoAnalysisAgents()
         tasks = CryptoAnalysisTasks()
 
-        technical_analyst_agent = agents.technical_analyst()
-        sentiment_analyst_agent = agents.sentiment_analyst()
-        strategy_advisor_agent = agents.strategy_advisor()
+        # Create agents
+        technical_analyst_agent = agents.create_technical_analyst()
+        sentiment_analyst_agent = agents.create_sentiment_analyst()
+        strategy_advisor_agent = agents.create_strategy_advisor()
 
-        market_research_task = tasks.market_research(technical_analyst_agent, self.cryptocurrency)
-        technical_analysis_task = tasks.technical_analysis(technical_analyst_agent, self.cryptocurrency)
-        sentiment_analysis_task = tasks.sentiment_analysis(sentiment_analyst_agent, self.cryptocurrency)
-        strategy_recommendation_task = tasks.strategy_recommendation(strategy_advisor_agent, self.cryptocurrency)
+        # Define tasks
+        market_research_task = tasks.compile_market_research(technical_analyst_agent, self.cryptocurrency)
+        technical_analysis_task = tasks.perform_technical_analysis(technical_analyst_agent, self.cryptocurrency)
+        sentiment_analysis_task = tasks.conduct_sentiment_analysis(sentiment_analyst_agent, self.cryptocurrency)
+        strategy_recommendation_task = tasks.formulate_strategy_recommendation(strategy_advisor_agent, self.cryptocurrency)
 
+        # Initialize the crew with agents and tasks
         crew = Crew(
             agents=[technical_analyst_agent, sentiment_analyst_agent, strategy_advisor_agent],
             tasks=[market_research_task, technical_analysis_task, sentiment_analysis_task, strategy_recommendation_task],
             verbose=True
         )
 
+        # Kick off the crew and return the result
         result = crew.kickoff()
         return result
 

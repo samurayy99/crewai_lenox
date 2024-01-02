@@ -1,8 +1,35 @@
 import os
+import praw
 import tweepy
+import json
 from nltk.sentiment import SentimentIntensityAnalyzer
 from langchain.tools import tool
-import json
+
+class RedditSentimentAnalysis:
+    def __init__(self):
+        self.reddit = praw.Reddit(
+            client_id=os.getenv('REDDIT_CLIENT_ID'),
+            client_secret=os.getenv('REDDIT_CLIENT_SECRET'),
+            user_agent=os.getenv('REDDIT_USER_AGENT')
+        )
+        self.sia = SentimentIntensityAnalyzer()
+
+    @tool("Analyze Reddit Sentiment")
+    def analyze_reddit_sentiment(self, keywords, subreddits, limit=100):
+        try:
+            posts = []
+            for subreddit in subreddits:
+                for post in self.reddit.subreddit(subreddit).hot(limit=limit):
+                    if any(keyword.lower() in post.title.lower() for keyword in keywords):
+                        sentiment_score = self.sia.polarity_scores(post.title)
+                        posts.append({
+                            'title': post.title,
+                            'sentiment': sentiment_score['compound'],
+                            'url': post.url
+                        })
+            return {'status': 'success', 'data': posts}
+        except Exception as e:
+            return {'status': 'error', 'message': str(e)}
 
 class TwitterSentimentAnalysis:
     def __init__(self):
@@ -13,12 +40,6 @@ class TwitterSentimentAnalysis:
 
     @tool("Analyze Twitter Sentiment")
     def analyze_twitter_sentiment(self, keywords, limit=100):
-        """
-        Analyzes the sentiment of tweets containing specified keywords.
-        :param keywords: A list of keywords to search for in tweets.
-        :param limit: The maximum number of tweets to analyze.
-        :return: A list of dictionaries containing tweet text and sentiment score.
-        """
         try:
             tweets = []
             for keyword in keywords:
@@ -32,14 +53,3 @@ class TwitterSentimentAnalysis:
             return {'status': 'success', 'data': tweets}
         except Exception as e:
             return {'status': 'error', 'message': str(e)}
-
-if __name__ == "__main__":
-    # Instantiate the analysis tool
-    tsa = TwitterSentimentAnalysis()
-    
-    # Define keywords to monitor
-    keywords = ['bitcoin', 'ethereum', 'crypto']
-    
-    # Perform sentiment analysis
-    sentiments = tsa.analyze_twitter_sentiment(keywords)
-    print(json.dumps(sentiments, indent=2))
