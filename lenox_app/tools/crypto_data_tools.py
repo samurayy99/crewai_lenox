@@ -2,15 +2,11 @@ import requests
 import os
 from textblob import TextBlob  # Simple library for sentiment analysis
 import tweepy  # Twitter API library
+import logging
 
 class CryptoDataTools:
     @staticmethod
     def fetch_and_analyze_prices(cryptocurrency):
-        """
-        Fetches the latest price data for a given cryptocurrency and performs basic analysis.
-        :param cryptocurrency: The symbol of the cryptocurrency to analyze (e.g., 'BTC').
-        :return: A dictionary with price data and basic analysis.
-        """
         try:
             # Set your CoinMarketCap API Key
             api_key = os.getenv('COINMARKETCAP_API_KEY')
@@ -30,12 +26,15 @@ class CryptoDataTools:
             # Placeholder for moving average; replace with actual calculation
             moving_average = latest_price  # This is a placeholder
 
+            logging.info('Successfully fetched and analyzed prices')
             return {
                 'latest_price': latest_price,
                 'moving_average': moving_average
             }
         except Exception as e:
-            return {'error': str(e)}
+            logging.error(f"Error in fetch_and_analyze_prices: {e}")
+            return None  # or a suitable default value indicating failure
+
 
     @staticmethod
     def analyze_sentiment(cryptocurrency):

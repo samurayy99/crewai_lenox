@@ -1,26 +1,37 @@
 from crewai import Agent
 from tools.crypto_data_tools import CryptoDataTools
+import logging
 
 class CryptoAnalysisAgents:
     def create_technical_analyst(self, cryptocurrency):
-        """
-        Instantiate a Technical Analyst agent equipped with specialized cryptocurrency analysis tools.
-        :param cryptocurrency: The symbol of the cryptocurrency to analyze (e.g., 'BTC').
-        """
+        logging.info('Creating technical analyst with cryptocurrency: %s', cryptocurrency)
+        
+        # Define the tools within the method scope
         tools = [
-            CryptoDataTools.fetch_and_analyze_prices(cryptocurrency),
-            CryptoDataTools.analyze_sentiment(cryptocurrency),
-            CryptoDataTools.formulate_strategy  # Ensure this is callable or a valid tool
+            lambda: CryptoDataTools.fetch_and_analyze_prices(cryptocurrency),
+            lambda: CryptoDataTools.analyze_sentiment(cryptocurrency),
+            lambda price_data, sentiment_data: CryptoDataTools.formulate_strategy(price_data, sentiment_data)
         ]
-        if not all(tools):  # Check if any tool is None or invalid
-            raise ValueError("One or more tools are not correctly initialized for Technical Analyst.")
-        return Agent(
-            role='Crypto Technical Analyst',
-            goal="Deliver state-of-the-art technical analysis for cryptocurrencies, aiming to provide clients with precise forecasts and valuable insights.",
-            backstory="A well-versed analyst boasting extensive experience in the cryptocurrency markets, renowned for pinpointing market trends and delivering deep analysis.",
-            verbose=True,
-            tools=tools
-        )
+        
+        # Check if tools are callable and add enhanced error logging
+        try:
+            for tool in tools:
+                if not callable(tool):
+                    logging.error(f"Tool {tool} is not callable.")
+                    raise ValueError(f"Tool {tool} is not callable.")
+            logging.info('All tools are callable for Technical Analyst')
+            
+            return Agent(
+                role='Crypto Technical Analyst',
+                goal="Deliver state-of-the-art technical analysis for cryptocurrencies, aiming to provide clients with precise forecasts and valuable insights.",
+                backstory="A well-versed analyst boasting extensive experience in the cryptocurrency markets, renowned for pinpointing market trends and delivering deep analysis.",
+                verbose=True,
+                tools=tools
+            )
+        except Exception as e:
+            logging.error(f"An error occurred while initializing tools for Technical Analyst: {e}")
+            raise
+
 
     def create_sentiment_analyst(self, cryptocurrency):
         tools = [
@@ -37,11 +48,23 @@ class CryptoAnalysisAgents:
         )
 
     def create_strategy_advisor(self, cryptocurrency):
+        logging.info('Creating strategy advisor with cryptocurrency: %s', cryptocurrency)
+
+        # Create a lambda function to wrap the 'formulate_strategy' method
+        strategy_formulate_lambda = lambda price_data, sentiment_data: CryptoDataTools.formulate_strategy(price_data, sentiment_data)
+
+        # Add the lambda function to the tools list
         tools = [
-            CryptoDataTools.formulate_strategy  # Ensure this is callable or a valid tool
+            strategy_formulate_lambda
         ]
-        if not all(tools):  # Check if any tool is None or invalid
-            raise ValueError("One or more tools are not correctly initialized for Strategy Advisor.")
+
+        # Check if all tools are callable
+        if not all(callable(tool) for tool in tools):
+            logging.error('One or more tools are not callable for Strategy Advisor.')
+            raise ValueError("One or more tools are not callable for Strategy Advisor.")
+        logging.info('All tools are callable for Strategy Advisor')
+
+        # Return the Agent with the tools
         return Agent(
             role='Crypto Strategy Advisor',
             goal="Synthesize technical and sentiment analyses to develop well-rounded trading and investment strategies.",
@@ -49,3 +72,5 @@ class CryptoAnalysisAgents:
             verbose=True,
             tools=tools
         )
+
+
